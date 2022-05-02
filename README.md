@@ -1,12 +1,12 @@
-test
+PIP IoT
 ====
 
-test
+## Setup 
+Please follow, this article to install [node-red](https://nodered.org/docs/getting-started/local)
 
-### About
+And this [article](https://nodered.org/docs/user-guide/projects/) to install the project( aka git enabled version )
 
-This is your project's README.md file. It helps users understand what your
-project does, how to use it and anything else they may need to know.
+
 
 ### links to not loose
 [data logger](https://www.youtube.com/watch?v=E2aBIqssQLM)
