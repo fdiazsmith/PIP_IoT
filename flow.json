@@ -1,0 +1,58 @@
+[
+    {
+        "id": "ef5ba354ef380696",
+        "type": "tab",
+        "label": "Socket",
+        "disabled": false,
+        "info": "Simple interface for connection to socket clients",
+        "env": []
+    },
+    {
+        "id": "6452a23d04fe8a38",
+        "type": "websocket-listener",
+        "path": "/ws/sensor",
+        "wholemsg": "false"
+    },
+    {
+        "id": "1f3de09a9aaca154",
+        "type": "websocket in",
+        "z": "ef5ba354ef380696",
+        "name": "",
+        "server": "6452a23d04fe8a38",
+        "client": "",
+        "x": 460,
+        "y": 200,
+        "wires": [
+            [
+                "f9f5c0a94bbeb3a7"
+            ]
+        ]
+    },
+    {
+        "id": "6fe7862851e5c2f4",
+        "type": "websocket out",
+        "z": "ef5ba354ef380696",
+        "name": "",
+        "server": "6452a23d04fe8a38",
+        "client": "",
+        "x": 740,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "f9f5c0a94bbeb3a7",
+        "type": "debug",
+        "z": "ef5ba354ef380696",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 220,
+        "wires": []
+    }
+]
