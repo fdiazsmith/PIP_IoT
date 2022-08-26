@@ -1,8 +1,8 @@
 import time
 import network
 
-ssid = 'FRITZ!Box 5530 ZV'
-password = '47630114837781567881'
+ssid = 'HILOLA'
+password = 'hotspotforyourhotstuff'
 
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)

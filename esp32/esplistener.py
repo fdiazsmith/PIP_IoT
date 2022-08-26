@@ -7,8 +7,8 @@ from machine import Pin
 
 led = Pin(15, Pin.OUT)
 
-ssid = 'FRITZ!Box 5530 ZV'
-password = '47630114837781567881'
+ssid = 'Tellart'
+password = '1SimsAve'
 
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
