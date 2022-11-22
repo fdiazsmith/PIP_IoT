@@ -30,6 +30,7 @@ esptool.py --chip esp32 --port /dev/ttyUSB0 erase_flash
 ```
 esptool.py --chip esp32 --port /dev/ttyUSB0 --baud 460800 write_flash -z 0x1000 <your-firmware-file>
 ```
+For windows  follow this [article](https://randomnerdtutorials.com/flashing-micropython-firmware-esptool-py-esp32-esp8266/)
 
 ## Installing MQTT client on the Pico W
 1. Upload the library mgtt_as to the pico with thonny.
