@@ -230,7 +230,8 @@ class DotStar:
                 buf[i] = self._buf[i] if i % 4 == 0 else int(self._buf[i] * self._brightness)
             # Four 0xff bytes at the end.
             for i in range(self.end_header_index, len(buf)):
-                buf[i] = 0xff
+                buf[i] = 0x00
+                # buf[i] = 0xff ##original library had 4 0xff bytes at the end and changed it to 4 0x00 bytes
 
         if self._spi:
             self._spi.write(buf)
