@@ -21,43 +21,48 @@ void handleNotFound() {
   server.send(404, "text/plain", message);
 
 }
+// TODO: hangle all possible arguments
+// possibly with json from the header? that is just pointlessly ambitious, but nice
 void shapeHandler() {
 
-  String message = "Shape\n\n";
-  message += "URI: ";
-  message += server.uri();
-  message += "\nArguments: ";
-  message += server.args();
-  message += "\n";
-  // check if the characters in server.argName(i) == "id" and server.arg(i) == "1"
+    String message = "Shape\n\n";
+    message += "URI: ";
+    message += server.uri();
+    message += "\nArguments: ";
+    message += server.args();
+    message += "\n";
+    // check if the characters in server.argName(i) == "id" and server.arg(i) == "1"
 
-    for (uint8_t i = 0; i < server.args(); i++) {
-        message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-        if(server.argName(i) == "id"){
-            String shapeID = server.arg(i);
-            //switch on the id
-            int si = shapeID.toInt();
-            switch(si){
-                case 1:
-                    // do something
-                    s.color = CRGB::Green;
-                    Serial.println("Shape: S");
-                    break;
-                case 2:
-                    // b.color = CRGB::Orange;
-                    b.pos = 0;
-                    b.delay_ms = 50;
-                    break;
-                finally:
-                    break;
-                    
+        for (uint8_t i = 0; i < server.args(); i++) {
+            message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
+            if(server.argName(i) == "id"){
+                String shapeID = server.arg(i);
+                //switch on the id
+                int si = shapeID.toInt();
+                switch(si){
+                    case 1:
+                        // do something
+                        s.color = CRGB::Green;
+                        Serial.println("Shape: S");
+                        break;
+                    case 2:
+                        // b.color = CRGB::Orange;
+                        b.pos = 0;
+                        b.delay_ms = 50;
+                        break;
+                    finally:
+                        break;
+                        
+            }
         }
+
+    server.send(200, "text/plain", message);
+
     }
-
-  server.send(200, "text/plain", message);
-
 }
-}
+
+// TODO:
+// get static IP working
 
 // setup the server
 void setupServer(){

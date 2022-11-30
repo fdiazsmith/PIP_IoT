@@ -62,7 +62,8 @@ struct shape{
 	CRGB leds[NUM_LEDS];
 
 };
-// create a struct maker for the shape, to make it easier to create a shape
+// TODO: create a struct maker for the shape, to make it easier to create a shape
+// can we get an array of structs?
 // shape setupShape(int len, int delay_ms, bool wrap, CRGB color){
 //     shape s;
 //     s.pos = 0;
@@ -74,7 +75,8 @@ struct shape{
 // }
 shape s; 
 shape b; 
-
+// appartently this wroks
+shape allShapes[10];
 void setup() { 
 	Serial.begin(115200);
 	Serial.println("resetting");
