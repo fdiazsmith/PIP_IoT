@@ -39,11 +39,17 @@ void cyclon(){
 		delay(10);
 	}
 }
+
 void fill(CRGB color ){
     for(int i = 0; i < NUM_LEDS; i++) {
         leds[i] = color;
     }
     FastLED.show(); 
+}
+void turnOff(){
+    for(int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = CRGB::Black;
+    }
 }
 
 void shapeSection(int len, int pos, bool wrap){
@@ -63,9 +69,9 @@ void shapeSection(int len, int pos, bool wrap){
         // leds[pos+i] = CHSV(0, 255, 255*n);
     }
 }
-
+// TODO : figure out why this is bouncing back and forth
 // implement the tick_ms but with a struct by reference
-void tick_bounce_ms(shape &s){
+void tick_ms(shape &s){
     if(millis() - s.lastMillis > s.delay_ms){
         s.pos++;
         s.lastMillis = millis();
@@ -118,8 +124,3 @@ void mover(shape &s){
     
 }
 
-void turnOff(){
-    for(int i = 0; i < NUM_LEDS; i++) {
-        leds[i] = CRGB::Black;
-    }
-}

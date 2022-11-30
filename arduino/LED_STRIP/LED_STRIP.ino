@@ -30,6 +30,15 @@ date: 2020-02-01
 #include <FastLED.h>
 #include <Arduino.h>
 
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <WebServer.h>
+#include <ESPmDNS.h>
+
+const char* ssid = "HILOLA";
+const char* password = "hotspotforyourhotstuff";
+
+WebServer server(80);
 // How many leds in your strip?
 #define NUM_LEDS  170 
 #define DATA_PIN 23
@@ -53,6 +62,7 @@ struct shape{
 	CRGB leds[NUM_LEDS];
 
 };
+// create a struct maker for the shape, to make it easier to create a shape
 // shape setupShape(int len, int delay_ms, bool wrap, CRGB color){
 //     shape s;
 //     s.pos = 0;
@@ -62,25 +72,25 @@ struct shape{
 //     s.color = color;
 //     return s;
 // }
-shape s; //= setupShape(0, 100, false, CRGB::Red);
-shape b;
+shape s; 
+shape b; 
 
 void setup() { 
-	Serial.begin(57600);
+	Serial.begin(115200);
 	Serial.println("resetting");
 	FastLED.addLeds<APA102,DATA_PIN, CLOCK_PIN,BGR>(leds,NUM_LEDS);
 	FastLED.setBrightness(100);
 	// create a variable to hold struct data
-	
+	setupServer();
 	s.len = 10;
 	s.wrap = true;
 	s.color = CRGB::Red;
 	s.delay_ms = 100;
 
 	b.len = 20;
-	b.wrap = true;
+	b.wrap = false;
 	b.color = CRGB::Blue;
-	b.delay_ms = 300;
+	b.delay_ms = 30;
 
 }
 
@@ -91,11 +101,12 @@ void loop() {
 	turnOff();
 	FastLED.show();
 	// create a for loop to move the index of the leds
-	tick_ms(s);
-	tick_bounce_ms(b);
+	tick_bounce_ms(s);
+	tick_ms(b);
 
 	mover(s);
 	mover(b);
 	FastLED.show();
+	server.handleClient();
 	//  fill_solid( leds, NUM_LEDS, CRGB( 200, 116, 110));
 }
