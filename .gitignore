@@ -107,3 +107,4 @@ dist
 **/pymakr.conf
 .vscode/**
 
+.DS_Store
