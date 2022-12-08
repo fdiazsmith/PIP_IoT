@@ -53,7 +53,7 @@ void shapeHandler() {
                         // do something
                         s.color = CRGB::Green;
                         Serial.println("Shape: S");
-                        triggerShape();
+                        // triggerShape();
                         break;
                     case 2:
                         // b.color = CRGB::Orange;
@@ -74,18 +74,18 @@ void shapeHandler() {
 // create a function to parse URL parameters
 
 
-// TODO: add all the options to 
-void triggerShape(int id, CRGB color, int len, int delay_ms, bool wrap){
-  // interpret this as pseudo code to be implemented
-  /*
-  allShapes[id].color = color;
-  allShapes[id].len = len;
-  allShapes[id].delay_ms = delay_ms;
-  allShapes[id].wrap = wrap;
-  allShapes[id].pos = 0;
-  */
+// // TODO: add all the options to 
+// void triggerShape(int id, CRGB color, int len, int delay_ms, bool wrap){
+//   // interpret this as pseudo code to be implemented
+//   /*
+//   allShapes[id].color = color;
+//   allShapes[id].len = len;
+//   allShapes[id].delay_ms = delay_ms;
+//   allShapes[id].wrap = wrap;
+//   allShapes[id].pos = 0;
+//   */
   
-}
+// }
 // TODO:
 // get static IP working
 

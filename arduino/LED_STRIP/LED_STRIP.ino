@@ -34,6 +34,7 @@ date: 2020-02-01
 #include <WiFiClient.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
+// #include "Dash.h"
 
 const char* ssid = "HILOLA";
 const char* password = "hotspotforyourhotstuff";
@@ -50,7 +51,7 @@ int secSize = 10;
 int j = 0;
 int k = 0;
 
-// Strip strip(NUM_LEDS);
+// Dash dash(NUM_LEDS);
 // create a strut to hold the data for the shape
 struct shape{
 	int pos;
