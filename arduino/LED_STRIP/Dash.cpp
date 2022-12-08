@@ -25,8 +25,6 @@ void Dash::fadeall(){
         } 
 }
 
-
-
 void Dash::fill( ){
     for(int i = 0; i < _num_leds; i++) {
         leds[i] = color;
@@ -40,18 +38,25 @@ void Dash::turnOff( ){
 }
 
 void  Dash::tick_ms(){
+    // check if enough time has passed to update the dash
     if(millis() - _lastMillis > delay_ms){
+        // update the dash pos
         pos++;
+        // save time of update
         _lastMillis = millis();
     }
 }
 
 void  Dash::tick_bounce_ms(){
+    // If enough time has passed, update the position
     if(millis() - _lastMillis > delay_ms){
+        // If wrap is enabled, simply increment the position
         if(wrap){
             pos++;
+            // If we've reached the end of the strip, loop back to the beginning
             if(pos >= _num_leds) pos = 0;
         }
+        // If wrap is disabled, increment the position, but stop at the end of the strip
         else{
             pos++;
             if(pos >= _num_leds) pos = _num_leds;
@@ -75,7 +80,6 @@ void Dash::shapeSection(int length, int pos){
             if( npos   > _num_leds ) npos = _num_leds;
             leds[npos] = CHSV(255, 255, 255*n);
         }
-        // leds[pos+i] = CHSV(0, 255, 255*n);
     }
 }
 

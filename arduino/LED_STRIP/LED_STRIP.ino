@@ -75,15 +75,29 @@ void setup() {
 
 void loop() { 
 	// fill(CRGB::Yellow);
-	// turnOff();
-	// FastLED.show();
+	turnOff();
+	FastLED.show();
 	// // create a for loop to move the index of the leds
 	// tick_bounce_ms(s);
 	// tick_ms(b);
 
 	// mover(s);
 	// mover(b);
-	// FastLED.show();
+	for(int i = 0; i < 15; i++){
+		allDashes[i]->tick_ms();
+		allDashes[i]->mover();
+		for(int j = 0; j < NUM_LEDS; j++){
+			leds[j] += allDashes[i]->leds[j];
+		}
+	}
+	
+	FastLED.show();
+	
 	server.handleClient();
 	//  fill_solid( leds, NUM_LEDS, CRGB( 200, 116, 110));
+}
+void turnOff(){
+    for(int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = CRGB::Black;
+    }
 }
