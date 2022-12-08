@@ -34,7 +34,7 @@ date: 2020-02-01
 #include <WiFiClient.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
-// #include "Dash.h"
+#include "Dash.h"
 
 const char* ssid = "HILOLA";
 const char* password = "hotspotforyourhotstuff";
@@ -51,35 +51,12 @@ int secSize = 10;
 int j = 0;
 int k = 0;
 
+
 // Dash dash(NUM_LEDS);
-// create a strut to hold the data for the shape
-struct shape{
-	int pos;
-	int len;
-	bool wrap;
-	CRGB color;
-	unsigned long lastMillis;
-	int delay_ms;
-	CRGB leds[NUM_LEDS];
+// create an array  of 15 Dash
+Dash *allDashes[15];
 
-};
 
-/// thisis pinelopi work
-// TODO: create a struct maker for the shape, to make it easier to create a shape
-// can we get an array of structs?
-// shape setupShape(int len, int delay_ms, bool wrap, CRGB color){
-//     shape s;
-//     s.pos = 0;
-//     s.len = len;
-//     s.delay_ms = delay_ms;
-//     s.wrap = wrap;
-//     s.color = color;
-//     return s;
-// }
-shape s; 
-shape b; 
-// appartently this wroks
-shape allShapes[10];
 void setup() { 
 	Serial.begin(115200);
 	Serial.println("resetting");
@@ -87,31 +64,26 @@ void setup() {
 	FastLED.setBrightness(100);
 	// create a variable to hold struct data
 	setupServer();
-	s.len = 10;
-	s.wrap = true;
-	s.color = CRGB::Red;
-	s.delay_ms = 100;
-
-	b.len = 20;
-	b.wrap = false;
-	b.color = CRGB::Blue;
-	b.delay_ms = 30;
-
+	// create a for loop to initialize the array of dashes
+	for(int i = 0; i < 15; i++){
+		allDashes[i] = new Dash(NUM_LEDS);
+		allDashes[i]->setup();
+	}
 }
 
 
 
 void loop() { 
 	// fill(CRGB::Yellow);
-	turnOff();
-	FastLED.show();
-	// create a for loop to move the index of the leds
-	tick_bounce_ms(s);
-	tick_ms(b);
+	// turnOff();
+	// FastLED.show();
+	// // create a for loop to move the index of the leds
+	// tick_bounce_ms(s);
+	// tick_ms(b);
 
-	mover(s);
-	mover(b);
-	FastLED.show();
+	// mover(s);
+	// mover(b);
+	// FastLED.show();
 	server.handleClient();
 	//  fill_solid( leds, NUM_LEDS, CRGB( 200, 116, 110));
 }

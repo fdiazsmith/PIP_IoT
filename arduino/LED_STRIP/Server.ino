@@ -51,14 +51,14 @@ void shapeHandler() {
                 switch(si){
                     case 1:
                         // do something
-                        s.color = CRGB::Green;
+                        allDashes[0]->color = CRGB::Green;
                         Serial.println("Shape: S");
                         // triggerShape();
                         break;
                     case 2:
                         // b.color = CRGB::Orange;
-                        b.pos = 0;
-                        b.delay_ms = 50;
+                        allDashes[1]->pos = 0;
+                        allDashes[1]->delay_ms = 50;
                         break;
                     finally:
                         break;
