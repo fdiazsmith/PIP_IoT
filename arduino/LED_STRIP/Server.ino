@@ -21,10 +21,7 @@ void handleNotFound() {
   server.send(404, "text/plain", message);
 
 }
-// TODO: hangle all possible arguments
-// possibly with json from the header? that is just pointlessly ambitious, but nice
 void shapeHandler() {
-
     String message = "Shape\n\n";
     message += "URI: ";
     message += server.uri();
@@ -32,7 +29,19 @@ void shapeHandler() {
     message += server.args();
     message += "\n";
     // check if the characters in server.argName(i) == "id" and server.arg(i) == "1"
-
+    /*
+    cleaner way to check if the URL contains parameters still need be tested and implelmented
+    // Check if the URL contains parameters
+    if (server.hasArg("param1") && server.hasArg("param2")) {
+      // Get the value of the parameters
+      String param1 = server.arg("param1");
+      String param2 = server.arg("param2");
+      Serial.print("param1 = ");
+      Serial.println(param1);
+      Serial.print("param2 = ");
+      Serial.println(param2);
+    }
+    */
         for (uint8_t i = 0; i < server.args(); i++) {
             message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
             if(server.argName(i) == "id"){
@@ -44,6 +53,7 @@ void shapeHandler() {
                         // do something
                         s.color = CRGB::Green;
                         Serial.println("Shape: S");
+                        triggerShape();
                         break;
                     case 2:
                         // b.color = CRGB::Orange;
@@ -61,6 +71,21 @@ void shapeHandler() {
     }
 }
 
+// create a function to parse URL parameters
+
+
+// TODO: add all the options to 
+void triggerShape(int id, CRGB color, int len, int delay_ms, bool wrap){
+  // interpret this as pseudo code to be implemented
+  /*
+  allShapes[id].color = color;
+  allShapes[id].len = len;
+  allShapes[id].delay_ms = delay_ms;
+  allShapes[id].wrap = wrap;
+  allShapes[id].pos = 0;
+  */
+  
+}
 // TODO:
 // get static IP working
 
