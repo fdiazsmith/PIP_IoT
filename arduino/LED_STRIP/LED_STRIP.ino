@@ -62,6 +62,8 @@ struct shape{
 	CRGB leds[NUM_LEDS];
 
 };
+
+/// thisis pinelopi work
 // TODO: create a struct maker for the shape, to make it easier to create a shape
 // can we get an array of structs?
 // shape setupShape(int len, int delay_ms, bool wrap, CRGB color){
