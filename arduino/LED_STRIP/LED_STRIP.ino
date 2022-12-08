@@ -27,6 +27,7 @@ author: fer
 date: 2020-02-01
 
  */
+#include <vector> // Include the vector class
 #include <FastLED.h>
 #include <Arduino.h>
 
@@ -56,6 +57,8 @@ int k = 0;
 // create an array  of 15 Dash
 Dash *allDashes[15];
 
+// Create a vector of Dash objects
+std::vector<Dash> dashes;
 
 void setup() { 
 	Serial.begin(115200);
@@ -68,6 +71,34 @@ void setup() {
 	for(int i = 0; i < 15; i++){
 		allDashes[i] = new Dash(NUM_LEDS);
 		allDashes[i]->setup();
+	}
+	// This is an alternative way to create a vector of Dash objects
+	// this should make it a lot more dynamic!
+	// NOTE!! the following is an example of using a dynamic array size! 
+	// this is great because  we can create ane
+	
+
+	// Use the push_back() method to add elements to the vector
+		for (int i = 0; i < 10; i++) {
+		Dash dash(10);
+		// Push the Dash object to the end of the vector
+		dashes.push_back(dash);
+		}
+
+		// Print the elements of the vector before removing an element
+		for (int i = 0; i < dashes.size(); i++) {
+			dashes[i].setup();
+		}
+		// two different ways to remove an element from the vector
+		// the idea is that each dash  can have a kill me switch and then we remove it from the vector
+		dashes.erase(dashes.begin() + 5);
+
+		// Use the pop_back() method to remove the last Dash object from the vector
+		dashes.pop_back();
+
+	// Use the vector
+	for (int i = 0; i < dashes.size(); i++) {
+		Serial.println(dashes[i].color);
 	}
 }
 
