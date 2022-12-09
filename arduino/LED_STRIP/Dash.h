@@ -8,7 +8,7 @@ class Dash{
     public:
         Dash(int num_leds);
         void fill();
-        void setup();
+        void setup(int length, CRGB mainColor, int delayi, bool wrapindex);
         void fadeall();
         void shapeSection(int length);
         void tick_ms();

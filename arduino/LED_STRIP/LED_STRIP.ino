@@ -70,7 +70,7 @@ void setup() {
 	// create a for loop to initialize the array of dashes
 	for(int i = 0; i < 15; i++){
 		allDashes[i] = new Dash(NUM_LEDS);
-		allDashes[i]->setup();
+		allDashes[i]->setup(10, CRGB::Green, 50, true);
 	}
 	// This is an alternative way to create a vector of Dash objects
 	// this should make it a lot more dynamic!
@@ -79,60 +79,62 @@ void setup() {
 	
 
 	// Use the push_back() method to add elements to the vector
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 3; i++) {
 		Dash dash(NUM_LEDS);
 		// Push the Dash object to the end of the vector
 		dashes.push_back(dash);
 		}
 
-		// Print the elements of the vector before removing an element
-		for (int i = 0; i < dashes.size(); i++) {
-			dashes[i].setup();
-		}
+		// // Print the elements of the vector before removing an element
+		// for (int i = 0; i < dashes.size(); i++) {
+		// 	dashes[i].setup();
+		// }
+
+		dashes[0].setup(10, CRGB::Green, 50, true);
+		dashes[1].setup(20, CRGB::Yellow, 100, true);
+		dashes[2].setup(30, CRGB::Blue, 300, true);
 		// two different ways to remove an element from the vector
 		// the idea is that each dash  can have a kill me switch and then we remove it from the vector
-		dashes.erase(dashes.begin() + 5);
+		// dashes.erase(dashes.begin() + 5);
 
 		// Use the pop_back() method to remove the last Dash object from the vector
-		dashes.pop_back();
+		// dashes.pop_back();
 
 	// Use the vector
-	for (int i = 0; i < dashes.size(); i++) {
-		Serial.println(dashes[i].color);
-	}
+	// for (int i = 0; i < dashes.size(); i++) {
+	// 	Serial.println(dashes[i].color);
+	// }
 }
 
 
 
 void loop() { 
-  // fill(CRGB::Yellow);
-  // turnOff();
-  // FastLED.show();
-  // // // create a for loop to move the index of the leds
-  // // tick_bounce_ms(s);
-  // // tick_ms(b);
 
-  // // mover(s);
-  // // mover(b);
-  // for(int i = 0; i < 15; i++){
-  //  allDashes[i]->tick_ms();
-  //  allDashes[i]->mover();
-  //  for(int j = 0; j < NUM_LEDS; j++){
-  //    leds[j] += allDashes[i]->leds[j];
-  //  }
-  // }
-	dashes[0].tick_ms();
-	// dashes[0].shapeSection(10);
-	dashes[0].mover();
-	for(int j = 0; j < NUM_LEDS; j++){
-	leds[j] += dashes[0].leds[j];
+  turnOff();
+  FastLED.show();
+
+   for (int i = 0; i < dashes.size(); i++) {
+		dashes[i].tick_ms();
+		
+		dashes[i].mover();
+		for(int j = 0; j < NUM_LEDS; j++){
+			leds[j] += dashes[i].leds[j];
+		}
 	}
+	// dashes[0].tick_ms();
+	
+	// dashes[0].mover();
+	// for(int j = 0; j < NUM_LEDS; j++){
+	// 	leds[j] += dashes[0].leds[j];
+	// }
+	
 	// Serial.println(dashes[0].pos);
 	FastLED.show();
 	
 	server.handleClient();
-	//  fill_solid( leds, NUM_LEDS, CRGB( 200, 116, 110));
 }
+
+
 void turnOff(){
     for(int i = 0; i < NUM_LEDS; i++) {
         leds[i] = CRGB::Black;

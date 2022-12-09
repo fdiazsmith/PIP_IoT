@@ -12,11 +12,11 @@ Dash::Dash(int num_leds) {
 	leds  = new CRGB[_num_leds];
 }
 
-void Dash::setup(){
-	wrap = true;
-	color = CRGB::Red;
-	delay_ms = 100;
-    len = 10;
+void Dash::setup(int length, CRGB mainColor, int delayi, bool wrapindex){
+	wrap = wrapindex;
+	color = mainColor;
+	delay_ms = delayi;
+    len = length;
 }
 
 void Dash::fadeall(){
@@ -102,21 +102,21 @@ void Dash::mover(){
 
         col.nscale8(quadwave8(255*n));
         leds[npos%_num_leds] = col;
-        Serial.print(" LED:");
-        Serial.print(npos%_num_leds);
+
+        // Serial.print(" LED:");
+        // Serial.print(npos%_num_leds);
         
         // leds[npos%_num_leds] = leds[npos%_num_leds];
 
     }
-    Serial.println(" ");
+    // Serial.println(" ");
     int trailingPos = pos - 1;
     int leadingPos = pos + len;
     // if pos is less than 0 make 0 
     if(trailingPos < 0) trailingPos = 0;
     if (leadingPos > _num_leds) leadingPos = _num_leds;
     leds[leadingPos%_num_leds] = CRGB::Black;
-
     leds[trailingPos%_num_leds] = CRGB::Black;
-    // fadeall();
+    
     
 }
