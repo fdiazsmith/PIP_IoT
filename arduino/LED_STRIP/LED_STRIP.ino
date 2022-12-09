@@ -60,6 +60,19 @@ Dash *allDashes[15];
 // Create a vector of Dash objects
 std::vector<Dash> dashes;
 
+/*
+Note: I am creating two alternatives to handle the Dash objects
+one is using a static array of Dash objects
+the other is using a vector of Dash objects
+
+The vector is a dynamic array that can be resized at runtime
+The static array is a fixed size array that cannot be resized at runtime
+
+I am leaning towards the vector because it is more dynamic and can be resized at runtime
+but I leave the static array code here for reference
+
+*/
+
 void setup() { 
 	Serial.begin(115200);
 	Serial.println("resetting");
@@ -67,38 +80,35 @@ void setup() {
 	FastLED.setBrightness(100);
 	// create a variable to hold struct data
 	setupServer();
-	// create a for loop to initialize the array of dashes
+	// initialize the static array of Dash objects
 	for(int i = 0; i < 15; i++){
 		allDashes[i] = new Dash(NUM_LEDS);
+		//note that array have a different syntax for accessing the elements
 		allDashes[i]->setup(10, CRGB::Green, 50, true);
 	}
-	// This is an alternative way to create a vector of Dash objects
-	// this should make it a lot more dynamic!
-	// NOTE!! the following is an example of using a dynamic array size! 
-	// this is great because  we can create ane
-	
 
+	// Create a vector of Dash objects
 	// Use the push_back() method to add elements to the vector
-		for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 3; i++) {
 		Dash dash(NUM_LEDS);
 		// Push the Dash object to the end of the vector
 		dashes.push_back(dash);
-		}
+	}
 
-		// // Print the elements of the vector before removing an element
-		// for (int i = 0; i < dashes.size(); i++) {
-		// 	dashes[i].setup();
-		// }
+	// example of how to access the vector elements
+	// for (int i = 0; i < dashes.size(); i++) {
+	// 	dashes[i].setup();
+	// }
 
-		dashes[0].setup(10, CRGB::Green, 50, true);
-		dashes[1].setup(20, CRGB::Yellow, 100, true);
-		dashes[2].setup(30, CRGB::Blue, 300, true);
-		// two different ways to remove an element from the vector
-		// the idea is that each dash  can have a kill me switch and then we remove it from the vector
-		// dashes.erase(dashes.begin() + 5);
+	dashes[0].setup(10, CRGB::Green, 50, true);
+	dashes[1].setup(20, CRGB::Yellow, 100, true);
+	dashes[2].setup(30, CRGB::Blue, 300, true);
+	// two different ways to remove an element from the vector
+	// the idea is that each dash  can have a kill me switch and then we remove it from the vector
+	// dashes.erase(dashes.begin() + 5);
 
-		// Use the pop_back() method to remove the last Dash object from the vector
-		// dashes.pop_back();
+	// Use the pop_back() method to remove the last Dash object from the vector
+	// dashes.pop_back();
 
 	// Use the vector
 	// for (int i = 0; i < dashes.size(); i++) {
