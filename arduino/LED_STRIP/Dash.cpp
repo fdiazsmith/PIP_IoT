@@ -5,7 +5,7 @@
 Dash::Dash(int num_leds) {
    	pos = 0;
 	_num_leds = num_leds;
-	bool wrap = false;
+	bool wrap = true;
 	color = CRGB::Red;
 	_lastMillis = 0;
 	delay_ms = 100;
@@ -13,10 +13,10 @@ Dash::Dash(int num_leds) {
 }
 
 void Dash::setup(){
-    _num_leds = 10;
 	wrap = true;
 	color = CRGB::Red;
 	delay_ms = 100;
+    len = 10;
 }
 
 void Dash::fadeall(){
@@ -44,6 +44,10 @@ void  Dash::tick_ms(){
         pos++;
         // save time of update
         _lastMillis = millis();
+        // if wrap is enabled, loop back to the beginning
+        if(wrap){
+            if(pos >= _num_leds) pos = 0;
+        }
     }
 }
 
@@ -65,7 +69,7 @@ void  Dash::tick_bounce_ms(){
     }
 }
 
-void Dash::shapeSection(int length, int pos){
+void Dash::shapeSection(int length){
 	len = length;
     // do a for loop and fill the leds with the color
     for(int i = pos; i < pos+len; i++) {
@@ -98,9 +102,13 @@ void Dash::mover(){
 
         col.nscale8(quadwave8(255*n));
         leds[npos%_num_leds] = col;
-        leds[npos%_num_leds] += leds[npos%_num_leds];
+        Serial.print(" LED:");
+        Serial.print(npos%_num_leds);
+        
+        // leds[npos%_num_leds] = leds[npos%_num_leds];
 
     }
+    Serial.println(" ");
     int trailingPos = pos - 1;
     int leadingPos = pos + len;
     // if pos is less than 0 make 0 
@@ -112,4 +120,3 @@ void Dash::mover(){
     // fadeall();
     
 }
-

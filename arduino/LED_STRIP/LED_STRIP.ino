@@ -80,7 +80,7 @@ void setup() {
 
 	// Use the push_back() method to add elements to the vector
 		for (int i = 0; i < 10; i++) {
-		Dash dash(10);
+		Dash dash(NUM_LEDS);
 		// Push the Dash object to the end of the vector
 		dashes.push_back(dash);
 		}
@@ -105,23 +105,29 @@ void setup() {
 
 
 void loop() { 
-	// fill(CRGB::Yellow);
-	turnOff();
-	FastLED.show();
-	// // create a for loop to move the index of the leds
-	// tick_bounce_ms(s);
-	// tick_ms(b);
+  // fill(CRGB::Yellow);
+  // turnOff();
+  // FastLED.show();
+  // // // create a for loop to move the index of the leds
+  // // tick_bounce_ms(s);
+  // // tick_ms(b);
 
-	// mover(s);
-	// mover(b);
-	for(int i = 0; i < 15; i++){
-		allDashes[i]->tick_ms();
-		allDashes[i]->mover();
-		for(int j = 0; j < NUM_LEDS; j++){
-			leds[j] += allDashes[i]->leds[j];
-		}
+  // // mover(s);
+  // // mover(b);
+  // for(int i = 0; i < 15; i++){
+  //  allDashes[i]->tick_ms();
+  //  allDashes[i]->mover();
+  //  for(int j = 0; j < NUM_LEDS; j++){
+  //    leds[j] += allDashes[i]->leds[j];
+  //  }
+  // }
+	dashes[0].tick_ms();
+	// dashes[0].shapeSection(10);
+	dashes[0].mover();
+	for(int j = 0; j < NUM_LEDS; j++){
+	leds[j] += dashes[0].leds[j];
 	}
-	
+	// Serial.println(dashes[0].pos);
 	FastLED.show();
 	
 	server.handleClient();
