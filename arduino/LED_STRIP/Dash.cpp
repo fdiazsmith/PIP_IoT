@@ -69,23 +69,7 @@ void  Dash::tick_bounce_ms(){
     }
 }
 
-void Dash::shapeSection(int length){
-	len = length;
-    // do a for loop and fill the leds with the color
-    for(int i = pos; i < pos+len; i++) {
-        float n = (float)i/(float)len;
-        int npos =   pos + i;
-        if(wrap){
-            // if the section is longer than the strip, we need to wrap around
-            leds[npos%_num_leds] = CHSV(255, 255, 255*n);
 
-        }
-        else{
-            if( npos   > _num_leds ) npos = _num_leds;
-            leds[npos] = CHSV(255, 255, 255*n);
-        }
-    }
-}
 
 // implement mover to take in a struct
 void Dash::mover(){

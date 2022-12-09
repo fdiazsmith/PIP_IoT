@@ -10,7 +10,7 @@ class Dash{
         void fill();
         void setup(int length, CRGB mainColor, int delayi, bool wrapindex);
         void fadeall();
-        void shapeSection(int length);
+
         void tick_ms();
         void tick_bounce_ms();
         void mover();

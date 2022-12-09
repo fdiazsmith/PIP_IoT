@@ -114,6 +114,8 @@ void setup() {
 	// for (int i = 0; i < dashes.size(); i++) {
 	// 	Serial.println(dashes[i].color);
 	// }
+	turnOff();
+	FastLED.show();
 }
 
 
