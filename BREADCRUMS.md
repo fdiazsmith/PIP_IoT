@@ -1,4 +1,5 @@
-## Symlinkin pthon3 to python
+## Symlinkin pthon3 to python in mac m1
+> note: needs to be tested
 
 Open the Terminal by going to Applications > Utilities > Terminal.
 
