@@ -91,8 +91,9 @@ void shapeHandler() {
 
 // setup the server
 void setupServer(){
-    WiFi.mode(WIFI_STA);
+  WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
+   WiFi.config(staticIP, gateway, subnet);
   Serial.println("");
 
   // Wait for connection

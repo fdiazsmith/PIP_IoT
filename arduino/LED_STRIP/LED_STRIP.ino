@@ -8,11 +8,11 @@ It develop for the firebeetle esp32 board.
 It uses the following pins:
 for SPI: 18 sck (clock), 23 mosi (data out), 19 miso (data in)
 
-Still need a simple webserver to control the LED strip functions
+it has a simple webserver to control the LED strip functions
 
 This was develop in the Arduino IDE 1.8.5
 using visual studio code as editor and compiling and uploading with the arduino-cli via the terminal.
-I recommend this set up as it is much faster than the Arduino IDE. though you need to add it to the path, etc.
+I recommend this set up as it is much faster than the Arduino IDE. though you need to add it to the path, etc.ok it's a bit of a hassle but it's worth it.
 
 
 You still need the IDE to do the board manager and library manager stuff as well as finding the serial port.
@@ -39,6 +39,9 @@ date: 2020-02-01
 
 const char* ssid = "HILOLA";
 const char* password = "hotspotforyourhotstuff";
+const IPAddress staticIP(192, 168, 1, 150); // assign a static IP to your ESP32
+const IPAddress gateway(192, 168, 1, 1);
+const IPAddress subnet(255, 255, 255, 0);
 
 WebServer server(80);
 // How many leds in your strip?
