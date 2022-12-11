@@ -39,7 +39,7 @@ date: 2020-02-01
 
 #include "Dash.h"
 
-#define EEPROM_SIZE 4 // 4 bytes for the IP address
+#define EEPROM_SIZE 5 // 4 bytes for the IP address
 const char* ssid = "HILOLA";
 const char* password = "hotspotforyourhotstuff";
 const IPAddress defaultIP(192, 168, 1, 150); // assign a static IP to your ESP32

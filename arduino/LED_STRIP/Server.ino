@@ -1,7 +1,7 @@
 
 void handleRoot() {
 
-  server.send(200, "text/plain", "hello from esp8266!");
+  server.send(200, "text/plain", "Led Server is up and running: " + WiFi.localIP().toString());
 
 }
 
@@ -115,6 +115,24 @@ void storeIP() {
     // send a response to the client
     server.send(200, "text/plain", "IP address updated successfully");
 }
+void storeID() {
+// read the new IP address from the request body
+    String idBody = server.arg("id");
+    // create a char array to hold the string
+    char idCharArray[idBody.length() + 1];
+
+    // copy the string into the char array
+    idBody.toCharArray(idCharArray, idBody.length() + 1);
+
+    // convert the string into an integer
+    int idByte = atoi(idCharArray);
+    EEPROM.begin(EEPROM_SIZE);
+    EEPROM.write(eepromStartAddress + 4, idByte);
+    EEPROM.commit();
+
+    // send a response to the client
+    server.send(200, "text/plain", "IP address updated successfully");
+}
 // create a function to parse URL parameters
 
 // // TODO: add all the options to 
@@ -129,11 +147,8 @@ void storeIP() {
 //   */
   
 // }
-// TODO:
-// get static IP working
 
-// setup the server
-void setupServer(){
+void setupServer() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   // initialize the EEPROM memory
@@ -143,12 +158,9 @@ void setupServer(){
   byte ip2 = EEPROM.read(eepromStartAddress + 1);
   byte ip3 = EEPROM.read(eepromStartAddress + 2);
   byte ip4 = EEPROM.read(eepromStartAddress + 3);
-
-    // WiFi.config(defaultIP, gateway, subnet);
-  // NOTE: having issues storing to EEPROM so I am just using the default IP address
+  
   // if there is no stored IP address, use the default IP address
   if (ip1 == 255 && ip2 == 255 && ip3 == 255 && ip4 == 255) {
-  
     WiFi.config(defaultIP, gateway, subnet);
   }
   // otherwise, use the stored IP address
@@ -174,23 +186,37 @@ void setupServer(){
   Serial.println(ssid);
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+  setupMDNS();
+  setupHTTPHandlers();
+  server.begin();
+  Serial.println("HTTP server started");
+}
 
-  if (MDNS.begin("esp32")) {
+void setupMDNS() {
+  // initialize the EEPROM memory
+  EEPROM.begin(EEPROM_SIZE);
+  byte stripID = EEPROM.read(eepromStartAddress + 5);
+  if (stripID == 255) {
+    stripID = 0;
+  }
+  else{
+    stripID = stripID;
+  }
+  const char* hostname = ("ledstrip" + String(stripID)).c_str();
+  if (MDNS.begin(hostname)) {
     Serial.println("MDNS responder started");
   }
+}
 
+void setupHTTPHandlers() {
   server.on("/", handleRoot);
   server.on("/shape", shapeHandler);
   server.on("/updateIP", storeIP);
-
+  server.on("/updateID", storeID);
   server.on("/inline", []() {
     server.send(200, "text/plain", "this works as well");
   });
-
   server.onNotFound(handleNotFound);
-
-  server.begin();
-  Serial.println("HTTP server started");
 }
 
 /// I still fucking hate this language
