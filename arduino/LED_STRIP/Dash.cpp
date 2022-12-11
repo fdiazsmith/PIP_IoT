@@ -3,26 +3,26 @@
 #include "Dash.h"
 
 Dash::Dash(int num_leds) {
-   	pos = 0;
-	_num_leds = num_leds;
-	bool wrap = true;
-	color = CRGB::Red;
-	_lastMillis = 0;
-	delay_ms = 100;
-	leds  = new CRGB[_num_leds];
+    pos = 0;
+    _num_leds = num_leds;
+    bool wrap = true;
+    color = CRGB::Red;
+    _lastMillis = 0;
+    delay_ms = 100;
+    leds  = new CRGB[_num_leds];
 }
 
 void Dash::setup(int length, CRGB mainColor, int delayi, bool wrapindex){
-	wrap = wrapindex;
-	color = mainColor;
-	delay_ms = delayi;
+    wrap = wrapindex;
+    color = mainColor;
+    delay_ms = delayi;
     len = length;
 }
 
 void Dash::fadeall(){
     for(int i = 0; i < _num_leds; i++) {
-         leds[i].nscale8(250); 
-        } 
+        leds[i].nscale8(250);
+    }
 }
 
 void Dash::fill( ){
@@ -89,18 +89,18 @@ void Dash::mover(){
 
         // Serial.print(" LED:");
         // Serial.print(npos%_num_leds);
-        
+
         // leds[npos%_num_leds] = leds[npos%_num_leds];
 
     }
     // Serial.println(" ");
     int trailingPos = pos - 1;
     int leadingPos = pos + len;
-    // if pos is less than 0 make 0 
+    // if pos is less than 0 make 0
     if(trailingPos < 0) trailingPos = 0;
     if (leadingPos > _num_leds) leadingPos = _num_leds;
     leds[leadingPos%_num_leds] = CRGB::Black;
     leds[trailingPos%_num_leds] = CRGB::Black;
-    
-    
+
+
 }
