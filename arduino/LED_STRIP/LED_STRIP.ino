@@ -35,13 +35,19 @@ date: 2020-02-01
 #include <WiFiClient.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
+#include <EEPROM.h>
+
 #include "Dash.h"
 
+#define EEPROM_SIZE 4 // 4 bytes for the IP address
 const char* ssid = "HILOLA";
 const char* password = "hotspotforyourhotstuff";
-const IPAddress staticIP(192, 168, 1, 150); // assign a static IP to your ESP32
+const IPAddress defaultIP(192, 168, 1, 150); // assign a static IP to your ESP32
 const IPAddress gateway(192, 168, 1, 1);
 const IPAddress subnet(255, 255, 255, 0);
+
+// the start address of the EEPROM memory where we will store the IP address
+const int eepromStartAddress = 0;
 
 WebServer server(80);
 // How many leds in your strip?

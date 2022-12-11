@@ -25,8 +25,13 @@ The mover should also be able to bounce or go in one direction.
 
 
 ## TODO
-- [ ] Add static IP
-- [ ] develop the struct that will hold the data for the dashMover
+
+
 - [ ] develop the endpoint that will take the data and update the struct
-- [ ] develop the function that will take the data from the struct and move the dash on the LED_STRIP
+- [ ] develop the time to die feature
+- [ ] develop the bounce feature
+- [ ] develop the one direction feature
+- [ ] develop the wrap no wrap
+- [ ] develop the sub-domain feature; by default the dash exist in the 0-1 (or 0 to num_leds) range. but it'd be nice to be able to have a sub-domain. like .2-.4 or .5-.7 where the dash is only in that range.
+
  

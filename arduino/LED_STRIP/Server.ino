@@ -71,8 +71,51 @@ void shapeHandler() {
     }
 }
 
-// create a function to parse URL parameters
+void storeIP() {
+// read the new IP address from the request body
+    String ipBody = server.arg("ip");
+    // create a char array to hold the string
+    char ipCharArray[ipBody.length() + 1];
 
+    // copy the string into the char array
+    ipBody.toCharArray(ipCharArray, ipBody.length() + 1);
+
+    // split the string into tokens using '.' as the delimiter
+    char* token = strtok(ipCharArray, ".");
+
+    // convert each token into an integer
+    int ipInt[4];
+    int i = 0;
+    while (token != NULL && i < 4) {
+      ipInt[i] = atoi(token);
+      token = strtok(NULL, ".");
+      i++;
+    }
+    // create a new IPAddress object using the integers
+    IPAddress newIP = IPAddress(ipInt[0], ipInt[1], ipInt[2], ipInt[3]);
+
+
+    Serial.print("new to be stored IP ");
+    Serial.print(ipInt[0]);
+    Serial.print(".");
+    Serial.print(ipInt[1]);
+    Serial.print(".");
+    Serial.print(ipInt[2]);
+    Serial.print(".");
+    Serial.println(ipInt[3]);
+
+    EEPROM.begin(EEPROM_SIZE);
+    // store the new IP address in the EEPROM memory
+    EEPROM.write(eepromStartAddress, newIP[0]);
+    EEPROM.write(eepromStartAddress + 1, newIP[1]);
+    EEPROM.write(eepromStartAddress + 2, newIP[2]);
+    EEPROM.write(eepromStartAddress + 3, newIP[3]);
+    EEPROM.commit();
+
+    // send a response to the client
+    server.send(200, "text/plain", "IP address updated successfully");
+}
+// create a function to parse URL parameters
 
 // // TODO: add all the options to 
 // void triggerShape(int id, CRGB color, int len, int delay_ms, bool wrap){
@@ -93,9 +136,34 @@ void shapeHandler() {
 void setupServer(){
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
-   WiFi.config(staticIP, gateway, subnet);
-  Serial.println("");
+  // initialize the EEPROM memory
+  EEPROM.begin(EEPROM_SIZE);
+  // read the stored IP address from the EEPROM memory
+  byte ip1 = EEPROM.read(eepromStartAddress);
+  byte ip2 = EEPROM.read(eepromStartAddress + 1);
+  byte ip3 = EEPROM.read(eepromStartAddress + 2);
+  byte ip4 = EEPROM.read(eepromStartAddress + 3);
 
+    // WiFi.config(defaultIP, gateway, subnet);
+  // NOTE: having issues storing to EEPROM so I am just using the default IP address
+  // if there is no stored IP address, use the default IP address
+  if (ip1 == 255 && ip2 == 255 && ip3 == 255 && ip4 == 255) {
+  
+    WiFi.config(defaultIP, gateway, subnet);
+  }
+  // otherwise, use the stored IP address
+  else {
+    IPAddress storedIP(ip1, ip2, ip3, ip4);
+    WiFi.config(storedIP, gateway, subnet);
+  }
+  Serial.print("Stored IP ");
+  Serial.print(ip1);
+  Serial.print(".");
+  Serial.print(ip2);
+  Serial.print(".");
+  Serial.print(ip3);
+  Serial.print(".");
+  Serial.println(ip4);
   // Wait for connection
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -113,6 +181,7 @@ void setupServer(){
 
   server.on("/", handleRoot);
   server.on("/shape", shapeHandler);
+  server.on("/updateIP", storeIP);
 
   server.on("/inline", []() {
     server.send(200, "text/plain", "this works as well");
