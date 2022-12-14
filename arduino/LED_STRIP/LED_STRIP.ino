@@ -21,7 +21,6 @@ The arduino-cli can be found here: https://arduino.github.io/arduino-cli/0.29/
 The basic coomands are:
 arduino-cli compile -b firebeetle32:esp32:firebeetle32  ./
 arduino-cli upload -b firebeetle32:esp32:firebeetle32 -p COM4  ./
- 
 
 author: fer
 date: 2020-02-01
