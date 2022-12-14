@@ -22,8 +22,8 @@ int total = 0;              // the running total
 int average = 0;            // the average
 
 // calibration
-int current_saved_value; 
-int time_interval = 10000; //10 secounds
+int current_saved_value;    // uses this to calculate the diviation
+int time_interval = 10000;  // 10 secounds
 int time_start;
 
 // signal detection
@@ -31,12 +31,25 @@ int time_between_signals = 500; // minimum time between signals
 bool startup_sequence = true;
 bool signal_fired = false;
 
+// wifi stuff
+#define EEPROM_SIZE 5 // 4 bytes for the IP address
+const char* ssid = "HILOLA";
+const char* password = "hotspotforyourhotstuff";
+const IPAddress defaultIP(192, 168, 1, 150); // assign a static IP to your ESP32
+const IPAddress gateway(192, 168, 1, 1);
+const IPAddress subnet(255, 255, 255, 0);
+// the start address of the EEPROM memory where we will store the IP address
+const int eepromStartAddress = 0;
+WebServer server(80);
+//===============================================================//
 
 void setup() {
   time_start = millis();          // start delay 
   pinMode(LED_BUILTIN, OUTPUT);   //Set pin 3 as 'output'
   Serial.begin(9600);             //Begin serial communication
   digitalWrite(LED_BUILTIN, LOW); // turn led off  
+
+  // set up for wifi
 }
 
 void loop() {
@@ -58,7 +71,7 @@ void loop() {
   //=================================//
 
 
-  //=========== SIGNAL DETECTION =========//
+  //=========== SIGNAL DETECTION ===========//
   // check if movement has acured within the last timer interval
   // if there was no movement we can procees to save the value  
   if(startup_sequence == false && signal_fired == false){
@@ -81,7 +94,7 @@ void loop() {
       time_start = millis();              // restart timer
     }
   }
-  //=======================================//
+  //=========================================//
 
   //=========== CALIBRATION =========//
   // if timer does reach interval 
@@ -95,8 +108,9 @@ void loop() {
   
   plot(average, current_saved_value);
   delay(10);  // delay in between reads for stability
-
 }
+
+// Fernando is amazing
 
 // function to plot variables onto the monitor
 void plot(int x, int y){
