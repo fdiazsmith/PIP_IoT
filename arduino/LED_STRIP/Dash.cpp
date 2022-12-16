@@ -12,17 +12,30 @@ Dash::Dash(int num_leds) {
 	leds  = new CRGB[_num_leds];
 }
 
-void Dash::setup(int length, CRGB mainColor, int delayi, bool wrapindex){
-	wrap = wrapindex;
-	color = mainColor;
-	delay_ms = delayi;
-    len = length;
+void Dash::setup(int length_, CRGB mainColor_, int delayms_, bool wrapindex_){
+	wrap = wrapindex_;
+	color = mainColor_;
+	delay_ms = delayms_;
+    len = length_;
+    direction = 1;
+    turnOff();
+}
+void Dash::setup(int length_, CRGB mainColor_, int delayms_, bool wrapindex_, bool bounce_, int direction_, float domainStart_, float domainEnd_ ){
+	wrap = wrapindex_;
+	color = mainColor_;
+	delay_ms = delayms_;
+    len = length_;
+    bounce = bounce_;
+    direction = direction_;
+    domainStart = domainStart_;
+    domainEnd = domainEnd_;
+    turnOff();
 }
 
 void Dash::fadeall(){
     for(int i = 0; i < _num_leds; i++) {
          leds[i].nscale8(250); 
-        } 
+        }
 }
 
 void Dash::fill( ){
@@ -38,33 +51,37 @@ void Dash::turnOff( ){
 }
 
 void  Dash::tick_ms(){
+    if ( bounce ){ // having both on is giving us a lot of edge cases.
+        wrap = false;
+    }
     // check if enough time has passed to update the dash
     if(millis() - _lastMillis > delay_ms){
-        // update the dash pos
-        pos++;
-        // save time of update
-        _lastMillis = millis();
         // if wrap is enabled, loop back to the beginning
-        if(wrap){
+        if(wrap && !bounce){
             if(pos >= _num_leds) pos = 0;
-        }
-    }
-}
 
-void  Dash::tick_bounce_ms(){
-    // If enough time has passed, update the position
-    if(millis() - _lastMillis > delay_ms){
-        // If wrap is enabled, simply increment the position
-        if(wrap){
-            pos++;
-            // If we've reached the end of the strip, loop back to the beginning
-            if(pos >= _num_leds) pos = 0;
         }
-        // If wrap is disabled, increment the position, but stop at the end of the strip
-        else{
-            pos++;
+        // if wrap is disabled, stop at the end of the strip
+        else if(!wrap && !bounce){
             if(pos >= _num_leds) pos = _num_leds;
         }
+
+
+        if ( bounce && (pos >= _num_leds - len)){
+            pos = _num_leds - len;
+            direction = -1;
+        }
+        else if ( bounce && (pos <= 0)){
+            pos = 0;
+            direction = 1;
+        }
+
+         // update the dash pos
+        pos += direction;
+        _cumulativeTicks += 1;
+        _age = _cumulativeTicks / ((float)_num_leds - (float)len);
+ 
+        // save time of update
         _lastMillis = millis();
     }
 }
@@ -83,8 +100,15 @@ void Dash::mover(){
             if( npos   > _num_leds ) npos = _num_leds;
         }
         CRGB col = color;
+        if (_age > life){
+            _mainBrightness -= 1;
+            if (_mainBrightness <= 0){
+                kill = true;
+                _mainBrightness = 0;
+            }
+        }
 
-        col.nscale8(quadwave8(255*n));
+        col.nscale8(quadwave8(_mainBrightness*n));
         leds[npos%_num_leds] = col;
 
         // Serial.print(" LED:");

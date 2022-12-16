@@ -8,11 +8,12 @@ class Dash{
     public:
         Dash(int num_leds);
         void fill();
-        void setup(int length, CRGB mainColor, int delayi, bool wrapindex);
+        void setup(int length_, CRGB mainColor_, int delayms_, bool wrapindex_);
+        void setup(int length_, CRGB mainColor_, int delayms_, bool wrapindex_, bool bounce_, int direction_, float domainStart_, float domainEnd_);
         void fadeall();
 
         void tick_ms();
-        void tick_bounce_ms();
+
         void mover();
         void turnOff();
 
@@ -20,6 +21,13 @@ class Dash{
         int pos;
         int len;
         bool wrap;
+        bool bounce;
+        int direction;
+        float domainStart;
+        float domainEnd;
+        float life; 
+        bool kill = false;
+        
         CRGB color;
         int delay_ms;
         CRGB *leds;
@@ -27,6 +35,9 @@ class Dash{
     private:
         int _num_leds;
         unsigned long _lastMillis;
+        float _age;
+        int _cumulativeTicks;
+        int _mainBrightness = 255;
 };
 
 

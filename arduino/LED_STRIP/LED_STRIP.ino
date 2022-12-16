@@ -87,17 +87,17 @@ void setup() {
 	FastLED.addLeds<APA102,DATA_PIN, CLOCK_PIN,BGR>(leds,NUM_LEDS);
 	FastLED.setBrightness(100);
 	// create a variable to hold struct data
-	setupServer();
+	// setupServer();
 	// initialize the static array of Dash objects
 	for(int i = 0; i < 15; i++){
 		allDashes[i] = new Dash(NUM_LEDS);
 		//note that array have a different syntax for accessing the elements
-		allDashes[i]->setup(10, CRGB::Green, 50, true);
+		allDashes[i]->setup(10, CRGB::Green, 5, true);
 	}
 
 	// Create a vector of Dash objects
 	// Use the push_back() method to add elements to the vector
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 1; i++) {
 		Dash dash(NUM_LEDS);
 		// Push the Dash object to the end of the vector
 		dashes.push_back(dash);
@@ -109,8 +109,10 @@ void setup() {
 	// }
 
 	dashes[0].setup(10, CRGB::Green, 50, true);
-	dashes[1].setup(20, CRGB::Yellow, 100, true);
-	dashes[2].setup(30, CRGB::Blue, 300, true);
+	// dashes[1].setup(20, CRGB::Yellow, 100, true);
+	// dashes[2].setup(30, CRGB::Blue, 300, true);
+	dashes[0].bounce = true;
+	dashes[0].life = 2.5;
 	// two different ways to remove an element from the vector
 	// the idea is that each dash  can have a kill me switch and then we remove it from the vector
 	// dashes.erase(dashes.begin() + 5);
@@ -142,7 +144,10 @@ void loop() {
 		}
 	}
 	// dashes[0].tick_ms();
-	
+	Serial.print('life: ');
+	Serial.print(dashes[0].life);
+	Serial.print(' kill: ');
+	Serial.println(dashes[0].kill);
 	// dashes[0].mover();
 	// for(int j = 0; j < NUM_LEDS; j++){
 	// 	leds[j] += dashes[0].leds[j];
@@ -151,7 +156,7 @@ void loop() {
 	// Serial.println(dashes[0].pos);
 	FastLED.show();
 	
-	server.handleClient();
+	// server.handleClient();
 }
 
 
