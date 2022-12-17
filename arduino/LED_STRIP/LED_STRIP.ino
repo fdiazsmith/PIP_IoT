@@ -39,10 +39,10 @@ date: 2020-02-01
 #include "Dash.h"
 
 #define EEPROM_SIZE 5 // 4 bytes for the IP address
-const char* ssid = "HILOLA";
-const char* password = "hotspotforyourhotstuff";
-const IPAddress defaultIP(192, 168, 1, 150); // assign a static IP to your ESP32
-const IPAddress gateway(192, 168, 1, 1);
+const char* ssid = "PIP";
+const char* password = "plantispresent10";
+const IPAddress defaultIP(192, 168, 86, 150); // assign a static IP to your ESP32
+const IPAddress gateway(192, 168, 86, 1);
 const IPAddress subnet(255, 255, 255, 0);
 
 // the start address of the EEPROM memory where we will store the IP address
@@ -83,11 +83,11 @@ but I leave the static array code here for reference
 
 void setup() { 
 	Serial.begin(115200);
-	Serial.println("resetting");
+	Serial.println("Setup starting: ");
 	FastLED.addLeds<APA102,DATA_PIN, CLOCK_PIN,BGR>(leds,NUM_LEDS);
 	FastLED.setBrightness(100);
 	// create a variable to hold struct data
-	// setupServer();
+	setupServer();
 	// initialize the static array of Dash objects
 	for(int i = 0; i < 15; i++){
 		allDashes[i] = new Dash(NUM_LEDS);
@@ -108,7 +108,7 @@ void setup() {
 	// 	dashes[i].setup();
 	// }
 
-	dashes[0].setup(10, CRGB::Green, 50, true);
+	dashes[0].setup(10, CRGB::Green, 5, true);
 	// dashes[1].setup(20, CRGB::Yellow, 100, true);
 	// dashes[2].setup(30, CRGB::Blue, 300, true);
 	dashes[0].bounce = true;
@@ -129,7 +129,7 @@ void setup() {
 }
 
 
-
+int lasttotaldashes =  0;
 void loop() { 
 
   turnOff();
@@ -142,21 +142,35 @@ void loop() {
 		for(int j = 0; j < NUM_LEDS; j++){
 			leds[j] += dashes[i].leds[j];
 		}
+		// Serial.print("i: ");	
+		// Serial.print(i);
+		// Serial.print(" age: ");
+		// Serial.print(dashes[i].age);
+		// Serial.print(" life: ");
+		// Serial.print(dashes[i].life);
+		// Serial.println(" - ");
+		// // Serial.print("dashes[i].kill: ");
+		// // Serial.print(dashes[i].kill);
+
+
+		if(dashes[i].kill){
+			// Serial.print("kill : ");
+			// Serial.println(i);
+			dashes.erase(dashes.begin() + i);
+		}
 	}
-	// dashes[0].tick_ms();
-	Serial.print('life: ');
-	Serial.print(dashes[0].life);
-	Serial.print(' kill: ');
-	Serial.println(dashes[0].kill);
-	// dashes[0].mover();
-	// for(int j = 0; j < NUM_LEDS; j++){
-	// 	leds[j] += dashes[0].leds[j];
-	// }
-	
-	// Serial.println(dashes[0].pos);
+
+	// Serial.print("dashes.size: ");
+	// Serial.println(dashes.size());
+	if (lasttotaldashes != dashes.size()){
+		Serial.print("dashes.size: ");
+		Serial.println(dashes.size());
+		lasttotaldashes = dashes.size();
+	}
+
 	FastLED.show();
 	
-	// server.handleClient();
+	server.handleClient();
 }
 
 

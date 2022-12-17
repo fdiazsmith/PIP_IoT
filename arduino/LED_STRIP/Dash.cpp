@@ -20,7 +20,7 @@ void Dash::setup(int length_, CRGB mainColor_, int delayms_, bool wrapindex_){
     direction = 1;
     turnOff();
 }
-void Dash::setup(int length_, CRGB mainColor_, int delayms_, bool wrapindex_, bool bounce_, int direction_, float domainStart_, float domainEnd_ ){
+void Dash::setup(int length_, CRGB mainColor_, int delayms_, bool wrapindex_, bool bounce_, int direction_, float domainStart_, float domainEnd_ , float life_){
 	wrap = wrapindex_;
 	color = mainColor_;
 	delay_ms = delayms_;
@@ -29,6 +29,7 @@ void Dash::setup(int length_, CRGB mainColor_, int delayms_, bool wrapindex_, bo
     direction = direction_;
     domainStart = domainStart_;
     domainEnd = domainEnd_;
+    life = life_;
     turnOff();
 }
 
@@ -79,7 +80,7 @@ void  Dash::tick_ms(){
          // update the dash pos
         pos += direction;
         _cumulativeTicks += 1;
-        _age = _cumulativeTicks / ((float)_num_leds - (float)len);
+        age = _cumulativeTicks / ((float)_num_leds - (float)len);
  
         // save time of update
         _lastMillis = millis();
@@ -100,7 +101,7 @@ void Dash::mover(){
             if( npos   > _num_leds ) npos = _num_leds;
         }
         CRGB col = color;
-        if (_age > life){
+        if (age > life){
             _mainBrightness -= 1;
             if (_mainBrightness <= 0){
                 kill = true;
@@ -113,7 +114,6 @@ void Dash::mover(){
 
         // Serial.print(" LED:");
         // Serial.print(npos%_num_leds);
-        
         // leds[npos%_num_leds] = leds[npos%_num_leds];
 
     }

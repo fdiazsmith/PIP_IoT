@@ -32,44 +32,77 @@ void shapeHandler() {
     /*
     cleaner way to check if the URL contains parameters still need be tested and implelmented
     // Check if the URL contains parameters
-    if (server.hasArg("param1") && server.hasArg("param2")) {
-      // Get the value of the parameters
-      String param1 = server.arg("param1");
-      String param2 = server.arg("param2");
-      Serial.print("param1 = ");
-      Serial.println(param1);
-      Serial.print("param2 = ");
-      Serial.println(param2);
-    }
     */
-        for (uint8_t i = 0; i < server.args(); i++) {
-            message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
-            if(server.argName(i) == "id"){
-                String shapeID = server.arg(i);
-                //switch on the id
-                int si = shapeID.toInt();
-                switch(si){
-                    case 1:
-                        // do something
-                        allDashes[0]->color = CRGB::Green;
-                        Serial.println("Shape: S");
-                        // triggerShape();
-                        break;
-                    case 2:
-                        // b.color = CRGB::Orange;
-                        allDashes[1]->pos = 0;
-                        allDashes[1]->delay_ms = 50;
-                        break;
-                    finally:
-                        break;
-                        
-            }
-        }
+        int len_ = 10;
+        bool wrap_  = true;
+        bool bounce_ = false;
+        int direction_ = 1;
+        float domainStart_ = 0.0;
+        float domainEnd_ = 1.0;
+        float life_ = 7.0; 
+        CRGB color_ = CRGB(255, 132, 60);
+        int delayms_ = 100;
+    if (server.hasArg("color") ) {
+    //  read the new IP address from the request body
+    String rgbBody = server.arg("color");
+    // create a char array to hold the string
+    char rgbCharArray[rgbBody.length() + 1];
+    // copy the string into the char array
+    rgbBody.toCharArray(rgbCharArray, rgbBody.length() + 1);
+    // split the string into tokens using '.' as the delimiter
+    char* token = strtok(rgbCharArray, ",");
 
+    // convert each token into an integer
+    int rgb[3];
+    int i = 0;
+    while (token != NULL && i < 3) {
+      rgb[i] = atoi(token);
+      token = strtok(NULL, ",");
+      i++;
+    }
+    // create a new IPAddress object using the integers
+    color_ = CRGB(rgb[0], rgb[1], rgb[2]);
+    }
+    if (server.hasArg("size") ) {
+      // Get the value of the parameters
+      len_ = server.arg("size").toInt();
+    }
+    if (server.hasArg("wrap") ) {
+      // Get the value of the parameters
+      wrap_ = server.arg("wrap").toInt();
+    }
+    if (server.hasArg("bounce") ) {
+      // Get the value of the parameters
+      bounce_ = server.arg("bounce").toInt();
+    }
+    if (server.hasArg("direction") ) {
+      // Get the value of the parameters
+      direction_ = server.arg("direction").toInt();
+    }
+    if (server.hasArg("domainStart") ) {
+      // Get the value of the parameters
+      domainStart_ = server.arg("domainStart").toFloat();
+    }
+    if (server.hasArg("domainEnd") ) {
+      // Get the value of the parameters
+      domainEnd_ = server.arg("domainEnd").toFloat();
+    }
+    if (server.hasArg("life") ) {
+      // Get the value of the parameters
+      life_ = server.arg("life").toFloat();
+    }
+    Dash dash(NUM_LEDS);
+    dash.setup(10, color_, 50, true);
+    //  dash.setup(len_, color_, delayms_, wrap_, bounce_, direction_, domainStart_, domainEnd_);
+    dash.age = 0.0;
+    dash.life = 7.0;
+
+		// Push the Dash object to the end of the vector
+    dashes.push_back(dash);
     server.send(200, "text/plain", message);
 
-    }
 }
+
 
 void storeIP() {
 // read the new IP address from the request body
@@ -133,20 +166,7 @@ void storeID() {
     // send a response to the client
     server.send(200, "text/plain", "IP address updated successfully");
 }
-// create a function to parse URL parameters
 
-// // TODO: add all the options to 
-// void triggerShape(int id, CRGB color, int len, int delay_ms, bool wrap){
-//   // interpret this as pseudo code to be implemented
-//   /*
-//   allShapes[id].color = color;
-//   allShapes[id].len = len;
-//   allShapes[id].delay_ms = delay_ms;
-//   allShapes[id].wrap = wrap;
-//   allShapes[id].pos = 0;
-//   */
-  
-// }
 
 void setupServer() {
   WiFi.mode(WIFI_STA);
@@ -210,7 +230,7 @@ void setupMDNS() {
 
 void setupHTTPHandlers() {
   server.on("/", handleRoot);
-  server.on("/shape", shapeHandler);
+  server.on("/dash", shapeHandler);
   server.on("/updateIP", storeIP);
   server.on("/updateID", storeID);
   server.on("/inline", []() {
