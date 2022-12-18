@@ -1,19 +1,14 @@
-#include <SPI.h>
 #include <WiFi.h>
+#include <HTTPClient.h>
 
 // SIGNAL SENDER FOR ANALOUGE INPUT
 // by Bjorn Karmann
-//
-// Diviation amounts for different sensors a.k.a. sensitivity
-// Flex senor:  10 
-// IR sensor:   10
 
 int diviation_amount = 10; // this should be the only variable needing to change depending on the sensor
 
 //===============================================================//
 
 //Constants:
-const int ledPin = 3;   //pin 3 has PWM funtion
 const int flexPin = A0; //pin A0 to read analog input
 
 // smoothing
@@ -36,12 +31,8 @@ bool signal_fired = false;
 // wifi stuff
 const char* ssid     = "PIP";
 const char* password = "plantispresent10";
+String serverName = "192.168.86.240:9980/touchinteractive?id=01";
 
-WiFiClient client;
-int keyIndex = 0;  
-char server[] = "192.168.86.38";   
-char getRequest[] = "GET 192.168.86.38/touchinteractive?id=01";
-int serverPort = 80;
 //===============================================================//
 
 void setup() {
@@ -55,30 +46,26 @@ void setup() {
 
   WiFi.begin(ssid, password); 
 
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.println(ssid);
-    delay(1000);
+  while(WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
   }
-  printWifiStatus();
+
   Serial.println("Wifi was connected");
   // connected to server
-  if (client.connect(server, serverPort)) { 
-    // Make a HTTP request:
-    Serial.println("connecting to server.");
-    client.println(getRequest);
-    client.println();
-  }
+  Serial.println("");
+  Serial.print("Connected to WiFi network with IP Address: ");
+  Serial.println(WiFi.localIP());
+
   time_start = millis();  
 }
 
 void loop() { 
 
   // if the server's disconnected, stop the client:
-  if (!client.connected()) {
-    Serial.println("disconnecting from server.");
-    client.stop();
-    while (true);   // do nothing forevermore:
-  }
+  if(WiFi.status() != WL_CONNECTED){
+    return;
+  } 
 
   //========== SMOOTHING ===========//
   // subtract the last reading
@@ -102,14 +89,30 @@ void loop() {
   if(startup_sequence == false && signal_fired == false){
     if(average > current_saved_value + diviation_amount || average < current_saved_value - diviation_amount ){
       // yes diviation accured so reset timer 
-      signal_fired = true;                // set signal fired to true
-      time_start = millis();              // reset timer to wait the storing of new value
-      plot(average, 1400);                // shows spike on monitor
-      digitalWrite(LED_BUILTIN, HIGH);    // turn led off              
-      if (client.connect(server, serverPort)) {   // send message to network what is connected
-        client.println(getRequest);     // Make a HTTP request to send signal
-        client.println();
+      signal_fired = true;                       // set signal fired to true
+      time_start = millis();                     // reset timer to wait the storing of new value
+      plot(average, current_saved_value+100);    // shows spike on monitor
+      digitalWrite(LED_BUILTIN, HIGH);           // turn led off      
+
+      // ++++++++++++. send request +++++++++//    
+      HTTPClient http;
+      String serverPath = serverName + "?avg=" + average + "&base=" + current_saved_value + "&div=" + diviation_amount;
+      http.begin(serverPath.c_str());
+
+      int httpResponseCode = http.GET();
+      if (httpResponseCode>0) {
+        Serial.print("HTTP Response code: ");
+        Serial.println(httpResponseCode);
+        String payload = http.getString();
+        Serial.println(payload);
       }
+      else {
+        Serial.print("Error code: ");
+        Serial.println(httpResponseCode);
+      }
+      // Free resources
+      http.end();
+      //+++++++++++++++++++++++++++++++++++++//
     }
   }
   // now that the signal was fires wait some time before listen for signals again
@@ -144,28 +147,5 @@ void loop() {
 void plot(int x, int y){
   Serial.print(x);
   Serial.print(",");
-  Serial.print(y);
-  Serial.print(",");
-  Serial.print(900);      // max plot 
-  Serial.print(",");
-  Serial.println(1400);   // min plot
-}
-
-void printWifiStatus() {
-  Serial.println("Connected to wifi");
-
-  // print the SSID of the network you're attached to:
-  Serial.print("SSID: ");
-  Serial.println(WiFi.SSID());
-
-  // print your WiFi shield's IP address:
-  IPAddress ip = WiFi.localIP();
-  Serial.print("IP Address: ");
-  Serial.println(ip);
-
-  // print the received signal strength:
-  long rssi = WiFi.RSSI();
-  Serial.print("signal strength (RSSI):");
-  Serial.print(rssi);
-  Serial.println(" dBm");
+  Serial.println(y);
 }
