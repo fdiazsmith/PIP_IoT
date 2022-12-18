@@ -39,10 +39,14 @@ date: 2020-02-01
 #include "Dash.h"
 
 #define EEPROM_SIZE 5 // 4 bytes for the IP address
-const char* ssid = "PIP";
-const char* password = "plantispresent10";
-const IPAddress defaultIP(192, 168, 86, 150); // assign a static IP to your ESP32
-const IPAddress gateway(192, 168, 86, 1);
+// const char* ssid = "PIP";
+// const char* password = "plantispresent10";
+// const IPAddress defaultIP(192, 168, 86, 150); // assign a static IP to your ESP32
+// const IPAddress gateway(192, 168, 86, 1);
+const char* ssid = "HILOLA";
+const char* password = "hotspotforyourhotstuff";
+const IPAddress defaultIP(192, 168, 1, 150); // assign a static IP to your ESP32
+const IPAddress gateway(192, 168, 1, 1);
 const IPAddress subnet(255, 255, 255, 0);
 
 // the start address of the EEPROM memory where we will store the IP address
@@ -142,26 +146,12 @@ void loop() {
 		for(int j = 0; j < NUM_LEDS; j++){
 			leds[j] += dashes[i].leds[j];
 		}
-		// Serial.print("i: ");	
-		// Serial.print(i);
-		// Serial.print(" age: ");
-		// Serial.print(dashes[i].age);
-		// Serial.print(" life: ");
-		// Serial.print(dashes[i].life);
-		// Serial.println(" - ");
-		// // Serial.print("dashes[i].kill: ");
-		// // Serial.print(dashes[i].kill);
-
 
 		if(dashes[i].kill){
-			// Serial.print("kill : ");
-			// Serial.println(i);
 			dashes.erase(dashes.begin() + i);
 		}
 	}
 
-	// Serial.print("dashes.size: ");
-	// Serial.println(dashes.size());
 	if (lasttotaldashes != dashes.size()){
 		Serial.print("dashes.size: ");
 		Serial.println(dashes.size());

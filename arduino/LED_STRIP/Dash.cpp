@@ -10,27 +10,28 @@ Dash::Dash(int num_leds) {
 	_lastMillis = 0;
 	delay_ms = 100;
 	leds  = new CRGB[_num_leds];
-}
-
-void Dash::setup(int length_, CRGB mainColor_, int delayms_, bool wrapindex_){
-	wrap = wrapindex_;
-	color = mainColor_;
-	delay_ms = delayms_;
-    len = length_;
-    direction = 1;
     turnOff();
 }
-void Dash::setup(int length_, CRGB mainColor_, int delayms_, bool wrapindex_, bool bounce_, int direction_, float domainStart_, float domainEnd_ , float life_){
+
+void Dash::setup(int length_, CRGB mainColor_, int delay_ms_, bool wrapindex_){
 	wrap = wrapindex_;
 	color = mainColor_;
-	delay_ms = delayms_;
+	delay_ms = delay_ms_;
+    len = length_;
+    direction = 1;
+    // turnOff();
+}
+void Dash::setup(int length_, CRGB mainColor_, int delay_ms_, bool wrapindex_, bool bounce_, int direction_, float domainStart_, float domainEnd_ , float life_){
+	wrap = wrapindex_;
+	color = mainColor_;
+	delay_ms = delay_ms_;
     len = length_;
     bounce = bounce_;
     direction = direction_;
     domainStart = domainStart_;
     domainEnd = domainEnd_;
     life = life_;
-    turnOff();
+    // turnOff();
 }
 
 void Dash::fadeall(){

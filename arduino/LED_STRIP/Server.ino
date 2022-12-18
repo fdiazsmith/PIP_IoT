@@ -1,7 +1,7 @@
 
 void handleRoot() {
 
-  server.send(200, "text/plain", "Led Server is up and running: " + WiFi.localIP().toString());
+  server.send(200, "text/plain", "Led Server is up and running: " + WiFi.localIP().toString() +" <br> end poits are: <br> /dash?size=<int>&wrap=<bool>&bounce=<bool>&life=<int>&color=<int>,<int>,<int> <br> / ipdateIP?ip=192.168.86.xx" );
 
 }
 
@@ -28,20 +28,18 @@ void shapeHandler() {
     message += "\nArguments: ";
     message += server.args();
     message += "\n";
-    // check if the characters in server.argName(i) == "id" and server.arg(i) == "1"
-    /*
-    cleaner way to check if the URL contains parameters still need be tested and implelmented
-    // Check if the URL contains parameters
-    */
-        int len_ = 10;
-        bool wrap_  = true;
-        bool bounce_ = false;
-        int direction_ = 1;
-        float domainStart_ = 0.0;
-        float domainEnd_ = 1.0;
-        float life_ = 7.0; 
-        CRGB color_ = CRGB(255, 132, 60);
-        int delayms_ = 100;
+    for (uint8_t i = 0; i < server.args(); i++) {
+      message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
+    }
+    int len_ = 10;
+    bool wrap_  = true;
+    bool bounce_ = false;
+    int direction_ = 1;
+    float domainStart_ = 0.0;
+    float domainEnd_ = 1.0;
+    float life_ = 7.0; 
+    CRGB color_ = CRGB(255, 132, 60);
+    int delay_ms_ = 100;
     if (server.hasArg("color") ) {
     //  read the new IP address from the request body
     String rgbBody = server.arg("color");
@@ -75,6 +73,9 @@ void shapeHandler() {
       // Get the value of the parameters
       bounce_ = server.arg("bounce").toInt();
     }
+    if(server.hasArg("delay_ms")){
+      delay_ms_ = server.arg("delay_ms").toInt();
+    }
     if (server.hasArg("direction") ) {
       // Get the value of the parameters
       direction_ = server.arg("direction").toInt();
@@ -92,10 +93,18 @@ void shapeHandler() {
       life_ = server.arg("life").toFloat();
     }
     Dash dash(NUM_LEDS);
-    dash.setup(10, color_, 50, true);
-    //  dash.setup(len_, color_, delayms_, wrap_, bounce_, direction_, domainStart_, domainEnd_);
-    dash.age = 0.0;
-    dash.life = 7.0;
+    dash.len = len_;
+
+    dash.life = life_;
+    dash.color = color_;
+    dash.delay_ms = delay_ms_;
+    dash.wrap = wrap_;
+    dash.bounce = bounce_;
+    // techincally not implemented yet but will leave for future use
+    dash.direction = direction_;
+    dash.domainStart = domainStart_;
+    dash.domainEnd = domainEnd_;
+    
 
 		// Push the Dash object to the end of the vector
     dashes.push_back(dash);

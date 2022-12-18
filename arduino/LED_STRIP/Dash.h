@@ -8,8 +8,8 @@ class Dash{
     public:
         Dash(int num_leds);
         void fill();
-        void setup(int length_, CRGB mainColor_, int delayms_, bool wrapindex_);
-        void setup(int length_, CRGB mainColor_, int delayms_, bool wrapindex_, bool bounce_, int direction_, float domainStart_, float domainEnd_, float life_);
+        void setup(int length_, CRGB mainColor_, int delay_ms_, bool wrapindex_);
+        void setup(int length_, CRGB mainColor_, int delay_ms_, bool wrapindex_, bool bounce_, int direction_, float domainStart_, float domainEnd_, float life_);
         void fadeall();
 
         void tick_ms();
