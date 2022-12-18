@@ -80,7 +80,7 @@ CRGBArray<NUM_LEDS> leds;
 // Overall twinkle density.
 // 0 (NONE lit) to 8 (ALL lit at once).  
 // Default is 5.
-#define TWINKLE_DENSITY 5
+#define TWINKLE_DENSITY 3
 
 // How often to change color palettes.
 #define SECONDS_PER_PALETTE  30
@@ -131,7 +131,12 @@ void loop()
   }
 
   drawTwinkles( leds);
-  
+  // turn off the first meter of LEDs
+  for (int i = 0; i < 20; i++) {
+    leds[i] = CRGB::Black;
+  }
+
+
   FastLED.show();
 }
 
@@ -356,6 +361,11 @@ const TProgmemRGBPalette16 Ice_p FL_PROGMEM =
 // Add or remove palette names from this list to control which color
 // palettes are used, and in what order.
 const TProgmemRGBPalette16* ActivePaletteList[] = {
+  &Snow_p
+};
+// Add or remove palette names from this list to control which color
+// palettes are used, and in what order.
+const TProgmemRGBPalette16* ActivePaletteList_bck[] = {
   &RetroC9_p,
   &BlueWhite_p,
   &RainbowColors_p,
@@ -364,7 +374,6 @@ const TProgmemRGBPalette16* ActivePaletteList[] = {
   &PartyColors_p,
   &RedWhite_p,
   &Snow_p,
-  &Holly_p,
   &Ice_p  
 };
 
