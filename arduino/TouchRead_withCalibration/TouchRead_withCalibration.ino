@@ -31,7 +31,7 @@ bool signal_fired = false;
 // wifi stuff
 const char* ssid     = "PIP";
 const char* password = "plantispresent10";
-String serverName = "http://192.168.86.240:9980/touchinteractive?id=01";
+String serverName = "http://192.168.86.240:9980/touchinteractive?id=1";
 unsigned long currentMillis = millis();
 unsigned long previousMillis = 0;
 unsigned long interval = 5000;
@@ -100,7 +100,7 @@ void loop() {
 
       // ++++++++++++. send request +++++++++//    
       HTTPClient http;
-      String serverPath = serverName + "?avg=" + average + "&base=" + current_saved_value + "&div=" + diviation_amount;
+      String serverPath = serverName + "&avg=" + average + "&base=" + current_saved_value + "&div=" + diviation_amount;
       http.begin(serverPath.c_str());
 
       int httpResponseCode = http.GET();
