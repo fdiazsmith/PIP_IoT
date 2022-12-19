@@ -31,8 +31,10 @@ bool signal_fired = false;
 // wifi stuff
 const char* ssid     = "PIP";
 const char* password = "plantispresent10";
-String serverName = "192.168.86.240:9980/touchinteractive?id=01";
-
+String serverName = "http://192.168.86.240:9980/touchinteractive?id=01";
+unsigned long currentMillis = millis();
+unsigned long previousMillis = 0;
+unsigned long interval = 5000;
 //===============================================================//
 
 void setup() {
@@ -62,10 +64,12 @@ void setup() {
 
 void loop() { 
 
-  // if the server's disconnected, stop the client:
-  if(WiFi.status() != WL_CONNECTED){
+  // if the server's disconnected, reconnect:
+  if ((WiFi.status() != WL_CONNECTED) && (currentMillis - previousMillis >= interval)) {
+    WiFi.disconnect();
+    WiFi.reconnect();
     return;
-  } 
+  }
 
   //========== SMOOTHING ===========//
   // subtract the last reading
