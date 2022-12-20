@@ -45,7 +45,7 @@ date: 2020-02-01
 // const IPAddress gateway(192, 168, 86, 1);
 const char* ssid = "HILOLA";
 const char* password = "hotspotforyourhotstuff";
-const IPAddress defaultIP(192, 168, 1, 150); // assign a static IP to your ESP32
+const IPAddress defaultIP(192, 168, 1, 151); // assign a static IP to your ESP32
 const IPAddress gateway(192, 168, 1, 1);
 const IPAddress subnet(255, 255, 255, 0);
 

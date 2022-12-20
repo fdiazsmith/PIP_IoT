@@ -1,6 +1,6 @@
 import socket
 import threading
-import pygame
+# import pygame
 import subprocess
 
 HOST = '0.0.0.0'

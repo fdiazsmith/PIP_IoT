@@ -3,7 +3,7 @@
 
 #define NUM_LEDS      400
 #define LED_TYPE   WS2811
-#define COLOR_ORDER   GRB
+#define COLOR_ORDER   BRG
 
 #define DATA_PIN 23
 // #define CLOCK_PIN 18
@@ -75,12 +75,12 @@ CRGBArray<NUM_LEDS> leds;
 // Overall twinkle speed.
 // 0 (VERY slow) to 8 (VERY fast).  
 // 4, 5, and 6 are recommended, default is 4.
-#define TWINKLE_SPEED 4
+#define TWINKLE_SPEED 6
 
 // Overall twinkle density.
 // 0 (NONE lit) to 8 (ALL lit at once).  
 // Default is 5.
-#define TWINKLE_DENSITY 3
+#define TWINKLE_DENSITY 1
 
 // How often to change color palettes.
 #define SECONDS_PER_PALETTE  30
@@ -361,7 +361,7 @@ const TProgmemRGBPalette16 Ice_p FL_PROGMEM =
 // Add or remove palette names from this list to control which color
 // palettes are used, and in what order.
 const TProgmemRGBPalette16* ActivePaletteList[] = {
-  &Snow_p
+  &Ice_p ,  
 };
 // Add or remove palette names from this list to control which color
 // palettes are used, and in what order.
