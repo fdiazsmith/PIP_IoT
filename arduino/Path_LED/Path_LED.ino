@@ -16,7 +16,7 @@ void setup() {
 	Serial.begin(57600);
 	Serial.println("starting");
 	FastLED.addLeds<APA102, DATA_PIN, CLOCK_PIN, BGR>(leds,NUM_LEDS);
-	FastLED.setBrightness(10);
+	FastLED.setBrightness(100);
 }
 
 void loop() {
