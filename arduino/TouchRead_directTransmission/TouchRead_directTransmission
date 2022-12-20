@@ -1,0 +1,158 @@
+#include <WiFi.h>
+#include <HTTPClient.h>
+
+// SIGNAL SENDER FOR ANALOUGE INPUT
+// by Bjorn Karmann
+
+int diviation_amount = 10; // this should be the only variable needing to change depending on the sensor
+
+//===============================================================//
+
+//Constants:
+const int flexPin = A0; //pin A0 to read analog input
+
+// smoothing
+const int numReadings = 20; // averging amount
+int readings[numReadings];  // the readings from the analog input
+int readIndex = 0;          // the index of the current reading
+int total = 0;              // the running total
+int average = 0;            // the average
+
+// calibration
+int current_saved_value;    // uses this to calculate the diviation
+int time_interval = 10000;  // time that signal has to be in a new position before calibration
+int time_start;
+
+// signal detection
+int time_between_signals = 500;     // minimum time between signals
+bool startup_sequence = true;
+bool signal_fired = false;
+
+// wifi stuff
+const char* ssid     = "PIP";
+const char* password = "plantispresent10";
+String serverName = "http://192.168.86.240:9980/touchinteractive?id=1";
+unsigned long currentMillis = millis();
+unsigned long previousMillis = 0;
+unsigned long interval = 5000;
+//===============================================================//
+
+void setup() {
+  Serial.println("Start");
+  pinMode(LED_BUILTIN, OUTPUT);     // Set pin 3 as 'output'
+  Serial.begin(9600);               // Begin serial communication
+  digitalWrite(LED_BUILTIN, LOW);   // Set led off  
+
+  Serial.println("Attempting to connect");
+  // Attempting to connect to SSID: 
+
+  WiFi.begin(ssid, password); 
+
+  while(WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("Wifi was connected");
+  // connected to server
+  Serial.println("");
+  Serial.print("Connected to WiFi network with IP Address: ");
+  Serial.println(WiFi.localIP());
+
+  time_start = millis();  
+}
+
+void loop() { 
+
+  // if the server's disconnected, reconnect:
+  if ((WiFi.status() != WL_CONNECTED) && (currentMillis - previousMillis >= interval)) {
+    WiFi.disconnect();
+    WiFi.reconnect();
+    return;
+  }
+
+  //========== SMOOTHING ===========//
+  // subtract the last reading
+  total = total - readings[readIndex];
+  // read from the sensor
+  readings[readIndex] = analogRead(flexPin);
+  // add the reading to the total
+  total = total + readings[readIndex];
+  // advance to the next position in the array
+  readIndex = readIndex + 1;
+  // if we're at the end of the array...
+  if (readIndex >= numReadings) {
+    readIndex = 0; // wrap around to the beginning
+  }
+  average = total / numReadings; // calculate the average:
+  //=================================//
+
+  //=========== SIGNAL DETECTION ===========//
+  // check if movement has acured within the last timer interval
+  // if there was no movement we can procees to save the value  
+  if(startup_sequence == false && signal_fired == false){
+    //if(average > current_saved_value + diviation_amount || average < current_saved_value - diviation_amount ){
+    if(true){
+      // yes diviation accured so reset timer 
+      signal_fired = true;                       // set signal fired to true
+      time_start = millis();                     // reset timer to wait the storing of new value
+      //plot(average, current_saved_value+100);    // shows spike on monitor
+      digitalWrite(LED_BUILTIN, HIGH);           // turn led off      
+
+      // ++++++++++++. send request +++++++++//    
+      HTTPClient http;
+      
+      //String serverPath = serverName + "&avg=" + average + "&base=" + current_saved_value + "&div=" + diviation_amount;
+      String serverPath = serverName + "&pin=" + analogRead(flexPin);
+      http.begin(serverPath.c_str());
+
+      int httpResponseCode = http.GET();
+      if (httpResponseCode>0) {
+        Serial.print("HTTP Response code: ");
+        Serial.println(httpResponseCode);
+        String payload = http.getString();
+        Serial.println(payload);
+      }
+      else {
+        Serial.print("Error code: ");
+        Serial.println(httpResponseCode);
+      }
+      // Free resources
+      http.end();
+      //+++++++++++++++++++++++++++++++++++++//
+    }
+  }
+  // now that the signal was fires wait some time before listen for signals again
+  if(signal_fired && millis() - time_start >= time_between_signals){
+    digitalWrite(LED_BUILTIN, LOW);       // turn led off  
+    if(average > current_saved_value + diviation_amount || average < current_saved_value - diviation_amount ){
+      // value is still over diviation threshold
+    }else{
+      signal_fired = false;               // this sets the listening back 
+      time_start = millis();              // restart timer
+    }
+  }
+  //=========================================//
+
+  //=========== CALIBRATION =========//
+  // if timer does reach interval 
+  if(millis()-time_start >= time_interval){  // timeout
+    signal_fired = false;                    // this sets the listening back 
+    startup_sequence = false;                // only needed on startup
+    current_saved_value = average;           // store new baseline for calibration
+    time_start = millis();                   // reset timer 
+  }
+  //=================================//
+  
+  //plot(average, current_saved_value);
+  delay(10);  // delay in between reads for stability
+}
+
+// Fernando is amazing
+
+// function to plot variables onto the monitor
+void plot(int x, int y){
+  Serial.print(x);
+  Serial.print(",");
+  Serial.println(y);
+}
