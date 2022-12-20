@@ -91,16 +91,19 @@ void loop() {
   // check if movement has acured within the last timer interval
   // if there was no movement we can procees to save the value  
   if(startup_sequence == false && signal_fired == false){
-    if(average > current_saved_value + diviation_amount || average < current_saved_value - diviation_amount ){
+    //if(average > current_saved_value + diviation_amount || average < current_saved_value - diviation_amount ){
+    if(true){
       // yes diviation accured so reset timer 
       signal_fired = true;                       // set signal fired to true
       time_start = millis();                     // reset timer to wait the storing of new value
-      plot(average, current_saved_value+100);    // shows spike on monitor
+      //plot(average, current_saved_value+100);    // shows spike on monitor
       digitalWrite(LED_BUILTIN, HIGH);           // turn led off      
 
       // ++++++++++++. send request +++++++++//    
       HTTPClient http;
-      String serverPath = serverName + "&avg=" + average + "&base=" + current_saved_value + "&div=" + diviation_amount;
+      
+      //String serverPath = serverName + "&avg=" + average + "&base=" + current_saved_value + "&div=" + diviation_amount;
+      String serverPath = serverName + "&pin=" + analogRead(flexPin);
       http.begin(serverPath.c_str());
 
       int httpResponseCode = http.GET();
@@ -141,7 +144,7 @@ void loop() {
   }
   //=================================//
   
-  plot(average, current_saved_value);
+  //plot(average, current_saved_value);
   delay(10);  // delay in between reads for stability
 }
 

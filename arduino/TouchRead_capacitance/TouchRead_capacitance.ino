@@ -10,15 +10,38 @@ RunningAverage myRA(100);
 
 const uint8_t touchPins[] = { T0, T1, T3, T4, T5, T6 };
 
-// wifi stuff
+// Hortus wifi
 const char* ssid = "PIP";
 const char* password = "plantispresent10";
-String serverName = "http://192.168.86.240:9980/mothertree?id=0";
-unsigned long currentMillis = millis();
-unsigned long previousMillis = 0;
-unsigned long interval = 5000;
+String serverName = "http://192.168.86.240:9980";
+
+const char* touchEndpoint = "/touchdialog?id=";
+const char* healthcheckEndpoint = "/healthcheck?id=";
+
+unsigned long startMillis = millis();
+unsigned long currentMillis = 0;
+unsigned long RETRY_INTERVAL = 5000;
 
 const int BOARDNUM = 0;
+const int HEARTBEAT_INTERVAL = 60000;
+
+void sendRequest(String url) {
+    HTTPClient http;
+    http.begin(url.c_str());
+
+    int httpResponseCode = http.GET();
+    if (httpResponseCode > 0) {
+      Serial.print("HTTP Response code: ");
+      Serial.println(httpResponseCode);
+      String payload = http.getString();
+      Serial.println(payload);
+    } else {
+      Serial.print("Error code: ");
+      Serial.println(httpResponseCode);
+    }
+    // Free resources
+    http.end();
+}
 
 void setup() {
   Serial.println("Attempting to connect");
@@ -45,45 +68,38 @@ void setup() {
 }
 
 void loop() {
+  currentMillis = millis();
 
   // if the server's disconnected, reconnect:
-  if ((WiFi.status() != WL_CONNECTED) && (currentMillis - previousMillis >= interval)) {
+  if ((WiFi.status() != WL_CONNECTED) && (currentMillis - startMillis >= RETRY_INTERVAL)) {
     WiFi.disconnect();
     WiFi.reconnect();
     return;
   }
 
   // loop through all the touchPins
-  for (int i = 0; i < 6; i++) {
-    Serial.println((String) "ID" + BOARDNUM + i + touchRead(touchPins[i]));
-  }
+  //for (int i = 0; i < 6; i++) {
+  //  Serial.println((String) "ID" + BOARDNUM + i + touchRead(touchPins[i]));
+  //}
 
   delay(50);
 
   myRA.addValue(touchRead(T1));
 
-
   //this value will need to be tweaked based on cable length & plant size etc.
   if (myRA.getAverage() - touchRead(T1) > 2) {
     digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-                                      // ++++++++++++. send request +++++++++//
-    HTTPClient http;
-    http.begin(serverName.c_str());
 
-    int httpResponseCode = http.GET();
-    if (httpResponseCode > 0) {
-      Serial.print("HTTP Response code: ");
-      Serial.println(httpResponseCode);
-      String payload = http.getString();
-      Serial.println(payload);
-    } else {
-      Serial.print("Error code: ");
-      Serial.println(httpResponseCode);
-    }
-    // Free resources
-    http.end();
-    //+++++++++++++++++++++++++++++++++++++//
+    String sensorTouchedUrl = serverName + touchEndpoint + BOARDNUM + "&pin=" + T1;
+    sendRequest(sensorTouchedUrl);
   } else {
     digitalWrite(LED_BUILTIN, LOW);  // turn the LED off by making the voltage LOW
   }
+
+  if (currentMillis - startMillis >= HEARTBEAT_INTERVAL) {
+    String heartbeatUrl = serverName + healthcheckEndpoint + BOARDNUM;
+    sendRequest(heartbeatUrl);
+    startMillis = currentMillis;
+  }
 }
+
