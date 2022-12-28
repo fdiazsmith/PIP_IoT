@@ -237,11 +237,16 @@ void setupMDNS() {
   }
 }
 
+void restartHandler() {
+  ESP.restart();
+}
+
 void setupHTTPHandlers() {
   server.on("/", handleRoot);
   server.on("/dash", shapeHandler);
   server.on("/updateIP", storeIP);
   server.on("/updateID", storeID);
+  server.on("/restart", restartHandler);
   server.on("/inline", []() {
     server.send(200, "text/plain", "this works as well");
   });
