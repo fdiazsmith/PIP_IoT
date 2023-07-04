@@ -44,7 +44,7 @@ void sendRequest(String url) {
 }
 
 void setup() {
-  Serial.println("Attempting to connect");
+  Serial.println("TOUCH INTERACTIVE Attempting to connect");
   // Attempting to connect to SSID:
 
   WiFi.begin(ssid, password);
@@ -77,19 +77,22 @@ void loop() {
     return;
   }
 
-  // loop through all the touchPins
-  //for (int i = 0; i < 6; i++) {
-  //  Serial.println((String) "ID" + BOARDNUM + i + touchRead(touchPins[i]));
-  //}
+   Serial.print((String) "[ ID " + BOARDNUM +" ] " );
+  //loop through all the touchPins
+  for (int i = 0; i < 6; i++) {
+   Serial.print("| "+ (String)i +" " + touchRead(touchPins[i]));
+  }
+   Serial.println();
+
 
   delay(50);
 
   myRA.addValue(touchRead(T1));
 
   //this value will need to be tweaked based on cable length & plant size etc.
-  if (myRA.getAverage() - touchRead(T1) > 2) {
+  if (myRA.getAverage() - touchRead(T1) > 15) {
     digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-
+    // Serial.print
     String sensorTouchedUrl = serverName + touchEndpoint + BOARDNUM + "&pin=" + T1;
     sendRequest(sensorTouchedUrl);
   } else {
@@ -102,4 +105,3 @@ void loop() {
     startMillis = currentMillis;
   }
 }
-
