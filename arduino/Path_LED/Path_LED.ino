@@ -20,6 +20,6 @@ void setup() {
 }
 
 void loop() {
-  fill_solid( leds, NUM_LEDS, CRGB(255,200,0));
+  fill_solid( leds, NUM_LEDS, CRGB(255,230,0));
   FastLED.show();
 }

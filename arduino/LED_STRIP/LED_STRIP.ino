@@ -41,7 +41,7 @@ date: 2020-02-01
 #define EEPROM_SIZE 5 // 4 bytes for the IP address
 // const char* ssid = "PIP";
 // const char* password = "plantispresent10";
-// const IPAddress defaultIP(192, 168, 86, 150); // assign a static IP to your ESP32
+// const IPAddress defaultIP(192, 168, 86, 155); // assign a static IP to your ESP32
 // const IPAddress gateway(192, 168, 86, 1);
 const char* ssid = "HILOLA";
 const char* password = "hotspotforyourhotstuff";
@@ -54,9 +54,12 @@ const int eepromStartAddress = 0;
 
 WebServer server(80);
 // How many leds in your strip?
-#define NUM_LEDS  170 
+#define NUM_LEDS 510 
 #define DATA_PIN 23
-#define CLOCK_PIN 18
+#define CLOCK_PIN 180
+
+unsigned long currentMillis = 0;
+unsigned long RESTART_INTERVAL = 360000;
 
 // Define the array of leds
 CRGB leds[NUM_LEDS];
@@ -138,6 +141,7 @@ void loop() {
 
   turnOff();
   FastLED.show();
+  currentMillis = millis();
 
    for (int i = 0; i < dashes.size(); i++) {
 		dashes[i].tick_ms();
@@ -161,6 +165,13 @@ void loop() {
 	FastLED.show();
 	
 	server.handleClient();
+
+  if (currentMillis >= RESTART_INTERVAL) {
+    for (int i = 0; i < dashes.size(); i++) {
+      dashes[i].fadeall();
+    }
+    ESP.restart();
+  }
 }
 
 
